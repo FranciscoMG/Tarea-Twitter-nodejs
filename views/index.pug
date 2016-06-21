@@ -1,0 +1,57 @@
+//- Mostrar los twittes con las palabras claves
+
+doctype html
+html(lang='es')
+  head
+    meta(charset='utf-8')
+    link(href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css', rel='stylesheet')
+    link(href='/style.css', rel='stylesheet')
+    link(href='https://abs.twimg.com/favicons/favicon.ico', rel='shortcut icon' type='image/x-icon')
+    script(src='https://code.jquery.com/jquery-1.12.4.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js')
+    script(src='/socket.io/socket.io.js')
+    title Twitter
+  body
+    header
+      nav.nav-wrapper.blue.darken-1
+        a.brand-logo.center Twitter Track
+    main
+      .row
+        .nav-margin.col.s12.blue.lighten-1
+          ul.tabs.blue.lighten-1
+            if(tracks !== undefined)
+              li.tab.col.s6
+                a(href='#primerTrack') #{tracks.first}
+              li.tab.col.s6
+                a(href='#segundoTrack') #{tracks.second}
+        #primerTrack.col.offset-s1.s10
+          ul#tweets_feed1.collection.with-header
+            li.collection-header
+              h4
+                span#tweets_feed1_count 0
+                |  Tweets sobre #{tracks.first}
+        #segundoTrack.col.offset-s1.s10
+          ul#tweets_feed2.collection.with-header
+            li.collection-header
+              h4
+                span#tweets_feed2_count 0
+                |  Tweets sobre #{tracks.second}
+    script(type="text/javascript").
+      var socket= io();
+      socket.on('addTweet', function(newTweet) {
+        var elemTweet= $('<li class="collection-item avatar">');
+        elemTweet.append('<img src="'+newTweet.user.profile_image_url_https+'" class="circle" />');
+        elemTweet.append('<span class="title"><strong>'+newTweet.user.name+' &#8226; @'+newTweet.user.screen_name+'</strong></span>');
+        elemTweet.append('<p>'+newTweet.text+'</p>');
+
+        if(newTweet.text.search("#{tracks.first}")!= -1){
+          $('#tweets_feed1_count').text(parseInt($('#tweets_feed1_count').text())+1);
+          $('#tweets_feed1').append(elemTweet);
+        }
+        else {
+          if(newTweet.text.search("#{tracks.second}")!= -1) {
+            $('#tweets_feed2_count').text(parseInt($('#tweets_feed2_count').text())+1);
+            $('#tweets_feed2').append(elemTweet);
+          }
+        }
+      });

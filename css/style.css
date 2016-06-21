@@ -1,0 +1,15 @@
+.nav-margin {
+  margin-bottom: 25px;
+}
+
+.tabs .tab a {
+  color: #66757f;
+}
+
+.tabs .tab a:hover {
+  color: #e1e8ed;
+}
+
+.tabs .indicator {
+  background-color: #66757f;
+}
